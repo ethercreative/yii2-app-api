@@ -1,16 +1,13 @@
 {
-    "name": "yiisoft/yii2-app-basic",
-    "description": "Yii 2 Basic Project Template",
-    "keywords": ["yii2", "framework", "basic", "project template"],
-    "homepage": "http://www.yiiframework.com/",
+    "name": "ethercreative/yii2-app-api",
+    "description": "Yii 2 RESTful API Template",
+    "keywords": ["yii2", "framework", "api", "project template"],
+    "homepage": "http://www.ethercreative.co.uk/",
     "type": "project",
-    "license": "BSD-3-Clause",
+    "license": "MIT",
     "support": {
-        "issues": "https://github.com/yiisoft/yii2/issues?state=open",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
-        "source": "https://github.com/yiisoft/yii2"
+        "issues": "https://github.com/ethercreative/yii2-app-api/issues?state=open",
+        "source": "https://github.com/ethercreative/yii2-app-api"
     },
     "minimum-stability": "stable",
     "require": {
