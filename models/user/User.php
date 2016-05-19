@@ -24,6 +24,16 @@ class User extends \app\models\base\User
 		];
 	}
 
+	public function fields()
+	{
+		return [
+			'id',
+			'display_name',
+			'created_at',
+			'updated_at',
+		];
+	}
+
 	public function getRefreshTokens()
 	{
 		return $this->hasMany(RefreshToken::className(), ['user_id' => 'id'])

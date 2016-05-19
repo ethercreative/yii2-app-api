@@ -63,8 +63,8 @@ class RegisterForm extends \yii\base\Model
 		try
 		{
 			$this->user->email = $this->email;
-			$this->user->password = $this->password;
 			$this->user->display_name = $this->display_name;
+			$this->user->setPassword($this->password);
 			$this->user->save();
 
 			$this->refresh_token = $this->user->generateRefreshToken();
