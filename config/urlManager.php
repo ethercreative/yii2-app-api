@@ -1,5 +1,8 @@
 <?php
 
+$urlRule = '\app\components\UrlRule';
+$pluralize = false;
+
 return [
 	'enablePrettyUrl' => true,
 	'showScriptName' => false,
@@ -7,8 +10,8 @@ return [
 	'suffix' => '/',
 	'rules' => [
 		[
-			'class' => 'yii\rest\UrlRule',
-			'pluralize' => false,
+			'class' => $urlRule,
+			'pluralize' => $pluralize,
 			'controller' => 'auth',
 			'only' => [
 				'create',
@@ -25,9 +28,9 @@ return [
 			],
 		],
 		[
-			'class' => 'yii\rest\UrlRule',
+			'class' => $urlRule,
+			'pluralize' => $pluralize,
 			'controller' => 'profile',
-			'pluralize' => false,
 			'patterns' => [
 				'POST avatar' => 'avatar',
 				'OPTIONS avatar' => 'options',
@@ -39,8 +42,8 @@ return [
 			],
 		],
 		[
-			'class' => 'yii\rest\UrlRule',
-			'pluralize' => false,
+			'class' => $urlRule,
+			'pluralize' => $pluralize,
 			'controller' => 'register',
 			'only' => [
 				'create',
@@ -48,8 +51,8 @@ return [
 			],
 		],
 		[
-			'class' => 'yii\rest\UrlRule',
-			'pluralize' => false,
+			'class' => $urlRule,
+			'pluralize' => $pluralize,
 			'controller' => 'site',
 			'only' => [
 				'index',

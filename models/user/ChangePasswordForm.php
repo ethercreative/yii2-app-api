@@ -4,8 +4,6 @@ namespace app\models\user;
 
 use Yii;
 
-// use api\models\user\User;
-
 class ChangePasswordForm extends \app\models\user\ResetPasswordForm
 {
 	public $current_password;

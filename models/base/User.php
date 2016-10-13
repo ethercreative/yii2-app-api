@@ -69,7 +69,9 @@ class User extends \app\models\base\Model implements \yii\web\IdentityInterface
 
 	public function beforeSave($insert)
 	{
-		if ($this->_password && !$this->password)
+		if ($insert && $this->password && !$this->_password)
+			$this->setPassword($this->password);
+		elseif ($this->_password && !$this->password)
 			$this->password = $this->_password;
 
 		return parent::beforeSave($insert);
@@ -77,7 +79,7 @@ class User extends \app\models\base\Model implements \yii\web\IdentityInterface
 
 	public function setPassword($password)
 	{
-		$this->password = Yii::$app->security->generatePasswordHash($this->password);
+		$this->password = $this->_password = Yii::$app->security->generatePasswordHash($password);
 		return $this;
 	}
 }

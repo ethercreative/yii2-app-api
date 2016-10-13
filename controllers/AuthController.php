@@ -15,14 +15,11 @@ class AuthController extends \app\controllers\Controller
 
 	public function verbs()
 	{
-		$verbs = parent::verbs();
-
-		$verbs['index'] = [];
-		$verbs['create'] = ['POST', 'OPTIONS'];
-		$verbs['token'] = ['GET', 'POST', 'OPTIONS'];
-		$verbs['delete'] = ['DELETE', 'OPTIONS'];
-
-		return $verbs;
+		return [
+			'create' => ['POST', 'OPTIONS'],
+			'token' => ['GET', 'POST', 'OPTIONS'],
+			'delete' => ['DELETE', 'OPTIONS'],
+		];
 	}
 
 	public function actionToken()

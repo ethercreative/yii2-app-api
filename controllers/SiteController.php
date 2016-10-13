@@ -13,16 +13,22 @@ class SiteController extends \app\controllers\Controller
         $actions = parent::actions();
 
         $actions = [
-            'index' => [
-                'class' => '\app\controllers\site\IndexAction',
-                'modelClass' => $this->modelClass,
-            ],
+            'index' => null,
             'options' => $actions['options'],
         ];
 
-        $actions['options']['collectionOptions'] = ['GET', 'HEAD', 'OPTIONS'];
-        $actions['options']['resourceOptions'] = ['GET', 'HEAD', 'OPTIONS'];
-
         return $actions;
+    }
+
+    public function verbs()
+    {
+        return [
+            'index' => ['GET', 'HEAD', 'OPTIONS'],
+        ];
+    }
+
+    public function actionIndex()
+    {
+        return ['message' => 'Hello world.'];
     }
 }

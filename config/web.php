@@ -1,46 +1,21 @@
 <?php
 
-$params = require(__DIR__ . '/params.php');
-
 $config = [
 	'id' => 'app-api',
 	'basePath' => dirname(__DIR__),
 	'bootstrap' => ['log'],
+	'params' => require(__DIR__ . '/params.php'),
 	'components' => [
-		'request' => [
-			// !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-			'cookieValidationKey' => 'DHnlfBPgXXHu5Y7d8DeE3sOJhG_ABTSF',
-		],
-		'cache' => [
-			'class' => 'yii\caching\FileCache',
-		],
-		'user' => [
-			'identityClass' => 'app\models\user\User',
-			'enableAutoLogin' => false,
-			'enableSession' => false,
-			'loginUrl' => null,
-		],
-		'mailer' => [
-			'class' => 'yii\swiftmailer\Mailer',
-			// send all mails to a file by default. You have to set
-			// 'useFileTransport' to false and configure a transport
-			// for the mailer to send real emails.
-			'useFileTransport' => true,
-		],
-		'log' => [
-			'traceLevel' => YII_DEBUG ? 3 : 0,
-			'targets' => [
-				[
-					'class' => 'yii\log\FileTarget',
-					'levels' => ['error', 'warning'],
-				],
-			],
-		],
+		'cache' => require(__DIR__ . '/cache.php'),
+		'user' => require(__DIR__ . '/user.php'),
+		'mailer' => require(__DIR__ . '/mailer.php'),
+		'log' => require(__DIR__ . '/log.php'),
 		'db' => require(__DIR__ . '/db.php'),
 		'urlManager' => require(__DIR__ . '/urlManager.php'),
 		'request' => require(__DIR__ . '/request.php'),
+		'response' => require(__DIR__ . '/response.php'),
 	],
-	'params' => $params,
+	
 ];
 
 if (YII_ENV_DEV) {

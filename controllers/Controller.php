@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\web\Response;
@@ -11,8 +12,9 @@ class Controller extends \yii\rest\ActiveController
 {
 	public
 		$public = false,
-		$publicActions = [],
-		$rateLimiter = true;
+		$publicActions = ['options'],
+		$rateLimiter = true,
+		$filters = [];
 
 	public function behaviors()
 	{
@@ -56,11 +58,53 @@ class Controller extends \yii\rest\ActiveController
 	{
 		$actions = parent::actions();
 
-		$actions['options'] = [
-			'class' => '\app\controllers\base\OptionsAction',
-			'verbs' => $this->verbs(),
-		];
+		$actions['index']['class'] = '\app\controllers\base\IndexAction';
+		$actions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
+
+		$actions['view']['class'] = '\app\controllers\base\ViewAction';
+
+		$actions['create']['class'] = '\app\controllers\base\CreateAction';
+
+		$actions['update']['class'] = '\app\controllers\base\UpdateAction';
+
+		$actions['delete']['class'] = '\app\controllers\base\DeleteAction';
+
+		$actions['options']['class'] = '\app\controllers\base\OptionsAction';
+		$actions['options']['verbs'] = $this->verbs();
+		$actions['options']['modelClass'] = $this->modelClass;
 
 		return $actions;
+	}
+
+	public function prepareDataProvider()
+	{
+		$modelClass = $this->modelClass;
+
+		$query = $modelClass::find();
+
+		foreach ($this->getFilters() as $column => $value)
+		{
+			if ($value)
+				$query->andWhere([$column => $value]);
+		}
+
+        return new ActiveDataProvider([
+            'query' => $query,
+        ]);
+	}
+
+	public function getFilters()
+	{
+		$filters = [];
+
+		foreach ($this->filters as $key => $value)
+		{
+			if (is_int($key))
+				$key = $value;
+
+			$filters[$key] = Yii::$app->request->get($key);
+		}
+
+		return $filters;
 	}
 }

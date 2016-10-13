@@ -40,56 +40,22 @@ class ProfileController extends \app\controllers\Controller
 			'options' => $actions['options'],
 		];
 
-		$actions['options']['collectionOptions'] = ['GET', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'];
-		$actions['options']['resourceOptions'] = ['GET', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'];
-
-		// die('<pre>'.print_r(Yii::$app->controller->module->requestedRoute, 1).'</pre>');
-
-		if (Yii::$app->request->url === '/profile/' && Yii::$app->request->isPost)
-			$actions['options']['collectionOptions'] = $this->verbs()['update'];
-
-		if (Yii::$app->request->url === '/profile/password/')
-			$actions['options']['collectionOptions'] = $this->verbs()['password'];
-
-		if (Yii::$app->request->url === '/profile/avatar/')
-			$actions['options']['collectionOptions'] = $this->verbs()['avatar'];
-
 		return $actions;
 	}
 
 	public function verbs()
 	{
-		$verbs = parent::verbs();
-
-		$verbs['update'] = ['PUT', 'PATCH', 'POST', 'OPTIONS'];
-		$verbs['password'] = ['PUT', 'PATCH', 'OPTIONS'];
-		$verbs['avatar'] = ['POST', 'OPTIONS'];
-
-		return $verbs;
+		return [
+			'index' => ['GET', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
+			'update' => ['PUT', 'PATCH', 'POST', 'OPTIONS'],
+			'password' => ['PUT', 'PATCH', 'OPTIONS'],
+			'avatar' => ['POST', 'OPTIONS'],
+		];
 	}
 
 	public function checkAccess($action, $model = null, $params = [])
 	{
-		$forbidden = false;
-
-		switch ($action)
-		{
-			case 'index':
-			case 'update':
-			case 'view':
-			case 'password':
-				if ($model && $model->id !== Yii::$app->user->id)
-					$forbidden = true;
-			break;
-
-			
-			case 'avatar':
-				if ($model && $model->user_id !== Yii::$app->user->id)
-					$forbidden = true;
-			break;
-		}
-
-		if ($forbidden)
+		if ($model && $model->id !== Yii::$app->user->id)
 			throw new ForbiddenHttpException('You do not have access to do that.');
 
 		return true;

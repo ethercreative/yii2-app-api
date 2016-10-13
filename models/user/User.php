@@ -20,7 +20,7 @@ class User extends \app\models\base\User
 		return [
 			[['display_name', 'email', 'password'], 'required'],
 			['email', 'email'],
-			[['jdoc'], 'safe'],
+			['email', 'unique'],
 		];
 	}
 

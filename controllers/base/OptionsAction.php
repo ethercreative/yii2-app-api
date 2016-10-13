@@ -9,6 +9,8 @@ class OptionsAction extends \yii\rest\OptionsAction
 {
 	public $verbs = [];
 
+    public $modelClass;
+
 	public function run($id = null)
 	{
 		if (Yii::$app->getRequest()->getMethod() !== 'OPTIONS') {
@@ -38,5 +40,9 @@ class OptionsAction extends \yii\rest\OptionsAction
             $options[] = 'OPTIONS';
 
         Yii::$app->getResponse()->getHeaders()->set('Allow', implode(', ', $options));
+
+        $modelClass = $this->modelClass;
+
+        return (new $modelClass)->safeAttributes();
 	}
 }
