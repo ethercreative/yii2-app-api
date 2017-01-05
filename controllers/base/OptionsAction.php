@@ -9,40 +9,40 @@ class OptionsAction extends \yii\rest\OptionsAction
 {
 	public $verbs = [];
 
-    public $modelClass;
+	public $modelClass;
 
 	public function run($id = null)
 	{
 		if (Yii::$app->getRequest()->getMethod() !== 'OPTIONS') {
-            Yii::$app->getResponse()->setStatusCode(405);
-        }
+			Yii::$app->getResponse()->setStatusCode(405);
+		}
 
-        $options = $id === null ? $this->collectionOptions : $this->resourceOptions;
+		$options = $id === null ? $this->collectionOptions : $this->resourceOptions;
 
-        if (!empty($this->verbs))
-        {
-        	$action = trim(str_replace(Yii::$app->controller->id, '', Yii::$app->request->url), '/');
+		if (!empty($this->verbs))
+		{
+			$action = trim(str_replace(Yii::$app->controller->id, '', Yii::$app->request->url), '/');
 
-        	if (!$action)
-        	{
-        		$options = ArrayHelper::merge(
-        			!empty($this->verbs['index']) ? $this->verbs['index'] : [],
-        			!empty($this->verbs['create']) ? $this->verbs['create'] : []
-        		);
-        	}
-        	elseif(!empty($this->verbs[$action]))
-        	{
-	        	$options = $this->verbs[$action];
-        	}
-        }
+			if (!$action)
+			{
+				$options = ArrayHelper::merge(
+					!empty($this->verbs['index']) ? $this->verbs['index'] : [],
+					!empty($this->verbs['create']) ? $this->verbs['create'] : []
+				);
+			}
+			elseif(!empty($this->verbs[$action]))
+			{
+				$options = $this->verbs[$action];
+			}
+		}
 
-        if (!in_array('OPTIONS', $options))
-            $options[] = 'OPTIONS';
+		if (!in_array('OPTIONS', $options))
+			$options[] = 'OPTIONS';
 
-        Yii::$app->getResponse()->getHeaders()->set('Allow', implode(', ', $options));
+		Yii::$app->getResponse()->getHeaders()->set('Allow', implode(', ', $options));
 
-        $modelClass = $this->modelClass;
+		$modelClass = $this->modelClass;
 
-        return (new $modelClass)->safeAttributes();
+		return (new $modelClass)->safeAttributes();
 	}
 }

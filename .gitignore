@@ -25,3 +25,10 @@ composer.phar
 phpunit.phar
 # local phpunit config
 /phpunit.xml
+
+# uploads
+/web/uploads/*
+
+# sftp configs
+sftp-config.json
+sftp-config-alt.json

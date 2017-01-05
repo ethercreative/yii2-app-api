@@ -14,7 +14,12 @@ class Controller extends \yii\rest\ActiveController
 		$public = false,
 		$publicActions = ['options'],
 		$rateLimiter = true,
-		$filters = [];
+		$filters = [],
+		$searchClass;
+
+	public $serializer = '\app\components\Serializer';
+
+	public $forbiddenMessage = 'You do not have the privileges to perform that action.';
 
 	public function behaviors()
 	{
@@ -51,6 +56,18 @@ class Controller extends \yii\rest\ActiveController
 			];
 		}
 
+		$actions = $this->actions();
+
+		if (!empty($actions['options']['collectionOptions']))
+		{
+			$behaviors['corsFilter'] = [
+				'class' => \yii\filters\Cors::className(),
+				'cors' => [
+					'Access-Control-Request-Method' => $actions['options']['collectionOptions'],
+				],
+			];
+		}
+
 		return $behaviors;
 	}
 
@@ -72,6 +89,14 @@ class Controller extends \yii\rest\ActiveController
 		$actions['options']['class'] = '\app\controllers\base\OptionsAction';
 		$actions['options']['verbs'] = $this->verbs();
 		$actions['options']['modelClass'] = $this->modelClass;
+
+		if (!empty($this->searchClass))
+		{
+			$actions['search'] = [
+				'class' => '\app\controllers\base\SearchAction',
+				'modelClass' => $this->searchClass,
+			];
+		}
 
 		return $actions;
 	}
@@ -106,5 +131,52 @@ class Controller extends \yii\rest\ActiveController
 		}
 
 		return $filters;
+	}
+
+	public function afterAction($action, $result)
+	{
+		Yii::$app->response->headers->set('Access-Control-Allow-Origin', '*');
+		Yii::$app->response->headers->set('Access-Control-Allow-Headers', join(', ', ['Content-Type', 'Authorization']));
+		Yii::$app->response->headers->set('Access-Control-Allow-Methods', Yii::$app->response->headers->get('Allow'));
+		Yii::$app->response->headers->set('Access-Control-Expose-Headers', join(', ', ['Link', 'X-Pagination-Current-Page', 'X-Pagination-Page-Count', 'X-Pagination-Per-Page', 'X-Pagination-Total-Count', 'User-Flash']));
+
+		if (!Yii::$app->request->isOptions)
+		{
+			$flashes = Yii::$app->session->getAllFlashes();
+
+			foreach ($flashes as $key => &$flash)
+			{
+				switch($key)
+				{
+					case 'success':
+						$title = 'Success';
+					break;
+
+					case 'danger':
+						$title = 'Error';
+					break;
+
+					default:
+						$title = 'Info';
+					break;
+				}
+
+				if (is_array($flash))
+				{
+					if (!$flash['title'])
+						$flash['title'] = $title;
+				}
+				else
+				{
+
+					$flash = ['title' => $title, 'message' => $flash];
+				}
+			}
+
+			if ($flashes)
+				Yii::$app->response->headers->set('User-Flash', json_encode($flashes));
+		}
+
+		return parent::afterAction($action, $result);
 	}
 }

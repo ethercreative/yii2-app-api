@@ -15,35 +15,37 @@ class AuthController extends \app\controllers\Controller
 
 	public function verbs()
 	{
-		return [
-			'create' => ['POST', 'OPTIONS'],
-			'token' => ['GET', 'POST', 'OPTIONS'],
-			'delete' => ['DELETE', 'OPTIONS'],
-		];
+		$verbs = parent::verbs();
+
+		$verbs['index'] = [];
+		$verbs['create'] = ['POST', 'OPTIONS'];
+		$verbs['token'] = ['GET', 'POST', 'OPTIONS'];
+		$verbs['delete'] = ['DELETE', 'OPTIONS'];
+
+		return $verbs;
 	}
 
 	public function actionToken()
 	{
-		$token = Yii::$app->request->headers->get('Authorization');
-		$token = trim(str_replace('Bearer', '', $token));
-		$token = AccessToken::find()->where(['token' => $token])->one();
-
 		if (Yii::$app->request->isPost)
 		{
 			$refresh_token = Yii::$app->request->post('refresh_token');
+			$refresh_token = RefreshToken::find()->where(['token' => $refresh_token])->one();
 
-			if ($token->refreshToken->token !== $refresh_token)
-				throw new HttpException(400, 'Refresh token mismatch.');
+			if (!$refresh_token)
+				throw new HttpException(400, 'Incorrect refresh token.');
 
-			$newToken = new AccessToken;
-			$newToken->refresh_id = $token->refresh_id;
-			$newToken->user_id = Yii::$app->user->id;
-			$newToken->save();
-
-			return $newToken;
+			return $refresh_token->generateAccessToken();
 		}
 		else
 		{
+			$token = Yii::$app->request->headers->get('Authorization');
+
+			if (!$token)
+				$token = Yii::$app->request->headers->get('authorization');
+
+			$token = trim(str_replace('Bearer', '', $token));
+			$token = AccessToken::find()->where(['token' => $token])->one();
 			return $token;
 		}
 	}
