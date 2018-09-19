@@ -6,6 +6,7 @@ use Yii;
 use yii\web\HttpException;
 
 use app\models\user\AccessToken;
+use app\models\user\RefreshToken;
 
 class AuthController extends \app\controllers\Controller
 {
